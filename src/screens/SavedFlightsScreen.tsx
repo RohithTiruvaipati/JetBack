@@ -5,9 +5,9 @@ import { savedFlights } from "@/data/dummy";
 import { TopBar } from "@/components/TopBar";
 import { FlightCard } from "@/components/FlightCard";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "@/types/navigation";
+import type { FlightsStackParamList } from "@/types/navigation";
 
-type Props = NativeStackScreenProps<RootStackParamList, "SavedFlights">;
+type Props = NativeStackScreenProps<FlightsStackParamList, "SavedFlights">;
 
 export function SavedFlightsScreen({ navigation }: Props) {
   return (

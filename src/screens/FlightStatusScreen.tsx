@@ -7,9 +7,9 @@ import { SegmentedTabs } from "@/components/SegmentedTabs";
 import { Timeline } from "@/components/Timeline";
 import { flightTimelineAA2047, savedFlights } from "@/data/dummy";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "@/types/navigation";
+import type { FlightsStackParamList } from "@/types/navigation";
 
-type Props = NativeStackScreenProps<RootStackParamList, "FlightStatus">;
+type Props = NativeStackScreenProps<FlightsStackParamList, "FlightStatus">;
 
 export function FlightStatusScreen({ navigation, route }: Props) {
   const [tab, setTab] = useState<"left" | "right">("left");
@@ -114,10 +114,33 @@ export function FlightStatusScreen({ navigation, route }: Props) {
               <Text style={styles.supportLink}>Open</Text>
             </Pressable>
 
-            <Pressable style={styles.supportCard} accessibilityRole="button" onPress={() => {}}>
+            <Pressable
+              style={styles.supportCard}
+              accessibilityRole="button"
+              onPress={() => {
+                (navigation as any).navigate("MessagesTab", {
+                  screen: "ChatConversation",
+                  params: { conversationId: "conv-bot-today" },
+                });
+              }}
+            >
               <Text style={styles.supportTitle}>Quick Support</Text>
-              <Text style={styles.supportSub}>Connect to airline support (dummy)</Text>
-              <Text style={styles.supportLink}>Request</Text>
+              <Text style={styles.supportSub}>Chat with jetBack Assistant or a live agent</Text>
+              <Text style={styles.supportLink}>Open Chat</Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.supportCard}
+              accessibilityRole="button"
+              onPress={() => {
+                (navigation as any).navigate("MessagesTab", {
+                  screen: "ChatList",
+                });
+              }}
+            >
+              <Text style={styles.supportTitle}>All Messages</Text>
+              <Text style={styles.supportSub}>View all conversations and support history</Text>
+              <Text style={styles.supportLink}>View</Text>
             </Pressable>
           </View>
         )}
