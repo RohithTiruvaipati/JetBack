@@ -5,9 +5,9 @@ import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import { passengerRights } from "@/data/dummy";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "@/types/navigation";
+import type { FlightsStackParamList } from "@/types/navigation";
 
-type Props = NativeStackScreenProps<RootStackParamList, "PassengerRights">;
+type Props = NativeStackScreenProps<FlightsStackParamList, "PassengerRights">;
 
 export function PassengerRightsScreen({ navigation }: Props) {
   return (

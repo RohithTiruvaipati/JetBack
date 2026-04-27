@@ -1,6 +1,22 @@
-export type RootStackParamList = {
+// ─── Bottom tab navigator ────────────────────────────────────────────
+export type RootTabParamList = {
+  FlightsTab: undefined;
+  MessagesTab: undefined;
+};
+
+// ─── Flights stack (nested inside FlightsTab) ────────────────────────
+export type FlightsStackParamList = {
   SavedFlights: undefined;
   FlightStatus: { flightId: string };
   PassengerRights: undefined;
 };
 
+// ─── Messages stack (nested inside MessagesTab) ──────────────────────
+export type MessagesStackParamList = {
+  ChatList: undefined;
+  ChatConversation: { conversationId: string };
+  AgentEscalation: { conversationId: string };
+};
+
+// ─── Legacy union kept for any cross-stack navigations ───────────────
+export type RootStackParamList = FlightsStackParamList & MessagesStackParamList;
