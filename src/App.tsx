@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { colors } from "@/theme/colors";
+
 import type {
   RootTabParamList,
   FlightsStackParamList,
@@ -14,6 +15,8 @@ import type {
   AuthStackParamList,
   AppRootStackParamList,
   RebookStackParamList,
+  VoucherStackParamList,
+  HotelStackParamList,
 } from "@/types/navigation";
 
 import { SavedFlightsScreen } from "@/screens/SavedFlightsScreen";
@@ -27,6 +30,8 @@ import { CreateAccountScreen } from "@/screens/CreateAccountScreen";
 import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
 import { RebookFlightScreen } from "@/screens/RebookFlightScreen";
 import { RebookConfirmScreen } from "@/screens/RebookConfirmScreen";
+import { MealVoucherScreen } from "@/screens/MealVoucherScreen";
+import { HotelBookingScreen } from "@/screens/HotelBookingScreen";
 
 // ─── Nested stacks ──────────────────────────────────────────────────
 
@@ -35,6 +40,8 @@ const MessagesStack = createNativeStackNavigator<MessagesStackParamList>();
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
 const RebookStack = createNativeStackNavigator<RebookStackParamList>();
+const VoucherStack = createNativeStackNavigator<VoucherStackParamList>();
+const HotelStack = createNativeStackNavigator<HotelStackParamList>();
 
 function FlightsNavigator() {
   return (
@@ -65,6 +72,22 @@ function RebookNavigator() {
   );
 }
 
+function VoucherNavigator() {
+  return (
+    <VoucherStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <VoucherStack.Screen name="MealVoucher" component={MealVoucherScreen} />
+    </VoucherStack.Navigator>
+  );
+}
+
+function HotelNavigator() {
+  return (
+    <HotelStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <HotelStack.Screen name="HotelBooking" component={HotelBookingScreen} />
+    </HotelStack.Navigator>
+  );
+}
+
 function AuthNavigator({ onSignedIn }: { onSignedIn: () => void }) {
   return (
     <AuthStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
@@ -83,12 +106,13 @@ function AuthNavigator({ onSignedIn }: { onSignedIn: () => void }) {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
+
 const navTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: colors.bg,
-  },
+    background: colors.bg
+  }
 };
 
 function TabIcon({ icon, focused, color }: { icon: any; focused: boolean; color: string }) {
@@ -103,7 +127,6 @@ function TabIcon({ icon, focused, color }: { icon: any; focused: boolean; color:
     </View>
   );
 }
-
 export default function App() {
   const [signedIn, setSignedIn] = React.useState(false);
 
@@ -152,6 +175,24 @@ export default function App() {
                     options={{
                       tabBarIcon: ({ focused, color }) => (
                         <TabIcon icon="swap-horizontal" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="VoucherTab"
+                    component={VoucherNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="fast-food" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="HotelTab"
+                    component={HotelNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="bed" focused={focused} color={color} />
                       ),
                     }}
                   />
