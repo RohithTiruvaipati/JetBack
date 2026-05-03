@@ -2,6 +2,7 @@
 export type RootTabParamList = {
   FlightsTab: undefined;
   MessagesTab: undefined;
+  RebookTab: undefined;
 };
 
 // ─── Auth stack (shown before tabs) ─────────────────────────────────
@@ -23,6 +24,12 @@ export type MessagesStackParamList = {
   ChatList: undefined;
   ChatConversation: { conversationId: string };
   AgentEscalation: { conversationId: string };
+};
+
+// ─── Rebook stack (nested inside RebookTab) ─────────────────────────
+export type RebookStackParamList = {
+  RebookFlight: undefined;
+  RebookConfirm: { selectedFlightId: string };
 };
 
 // ─── Legacy union kept for any cross-stack navigations ───────────────

@@ -13,6 +13,7 @@ import type {
   MessagesStackParamList,
   AuthStackParamList,
   AppRootStackParamList,
+  RebookStackParamList,
 } from "@/types/navigation";
 
 import { SavedFlightsScreen } from "@/screens/SavedFlightsScreen";
@@ -24,6 +25,8 @@ import { AgentEscalationScreen } from "@/screens/AgentEscalationScreen";
 import { LoginScreen } from "@/screens/LoginScreen";
 import { CreateAccountScreen } from "@/screens/CreateAccountScreen";
 import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
+import { RebookFlightScreen } from "@/screens/RebookFlightScreen";
+import { RebookConfirmScreen } from "@/screens/RebookConfirmScreen";
 
 // ─── Nested stacks ──────────────────────────────────────────────────
 
@@ -31,6 +34,7 @@ const FlightsStack = createNativeStackNavigator<FlightsStackParamList>();
 const MessagesStack = createNativeStackNavigator<MessagesStackParamList>();
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
+const RebookStack = createNativeStackNavigator<RebookStackParamList>();
 
 function FlightsNavigator() {
   return (
@@ -49,6 +53,15 @@ function MessagesNavigator() {
       <MessagesStack.Screen name="ChatConversation" component={ChatConversationScreen} />
       <MessagesStack.Screen name="AgentEscalation" component={AgentEscalationScreen} />
     </MessagesStack.Navigator>
+  );
+}
+
+function RebookNavigator() {
+  return (
+    <RebookStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <RebookStack.Screen name="RebookFlight" component={RebookFlightScreen} />
+      <RebookStack.Screen name="RebookConfirm" component={RebookConfirmScreen} />
+    </RebookStack.Navigator>
   );
 }
 
@@ -130,6 +143,15 @@ export default function App() {
                     options={{
                       tabBarIcon: ({ focused, color }) => (
                         <TabIcon icon="chatbubbles" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="RebookTab"
+                    component={RebookNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="swap-horizontal" focused={focused} color={color} />
                       ),
                     }}
                   />
