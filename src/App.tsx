@@ -4,6 +4,7 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar } from "expo-status-bar";
+import { Ionicons } from "@expo/vector-icons";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { colors } from "@/theme/colors";
 import type {
@@ -56,7 +57,7 @@ const navTheme = {
   },
 };
 
-function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
+function TabIcon({ icon, focused, color }: { icon: any; focused: boolean; color: string }) {
   return (
     <View
       style={[
@@ -64,9 +65,7 @@ function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
         focused && tabStyles.iconWrapActive,
       ]}
     >
-      <Text style={[tabStyles.icon, focused && tabStyles.iconActive]}>
-        {icon}
-      </Text>
+      <Ionicons name={icon} size={22} color={color} />
     </View>
   );
 }
@@ -80,18 +79,17 @@ export default function App() {
           screenOptions={{
             headerShown: false,
             tabBarStyle: tabStyles.bar,
-            tabBarActiveTintColor: colors.orange,
-            tabBarInactiveTintColor: colors.subtext,
-            tabBarLabelStyle: tabStyles.label,
+            tabBarShowLabel: false,
+            tabBarActiveTintColor: colors.card,
+            tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
           }}
         >
           <Tab.Screen
             name="FlightsTab"
             component={FlightsNavigator}
             options={{
-              tabBarLabel: "Flights",
-              tabBarIcon: ({ focused }) => (
-                <TabIcon icon="✈" focused={focused} />
+              tabBarIcon: ({ focused, color }) => (
+                <TabIcon icon="airplane" focused={focused} color={color} />
               ),
             }}
           />
@@ -99,9 +97,8 @@ export default function App() {
             name="MessagesTab"
             component={MessagesNavigator}
             options={{
-              tabBarLabel: "Messages",
-              tabBarIcon: ({ focused }) => (
-                <TabIcon icon="💬" focused={focused} />
+              tabBarIcon: ({ focused, color }) => (
+                <TabIcon icon="chatbubbles" focused={focused} color={color} />
               ),
             }}
           />
@@ -113,30 +110,20 @@ export default function App() {
 
 const tabStyles = StyleSheet.create({
   bar: {
-    backgroundColor: colors.card,
-    borderTopWidth: 1,
-    borderTopColor: colors.divider,
-    paddingTop: 6,
-    paddingBottom: 6,
-    height: 56,
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: "700",
-    marginTop: 2,
+    backgroundColor: colors.orange,
+    borderTopWidth: 0,
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: 60,
   },
   iconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   iconWrapActive: {
-    backgroundColor: colors.orangeSoft,
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
-  icon: {
-    fontSize: 18,
-  },
-  iconActive: {},
 });
