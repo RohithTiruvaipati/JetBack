@@ -6,6 +6,8 @@ import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import type { RebookStackParamList } from "@/types/navigation";
 
+const ORIGINAL_TICKET_USD = 328;
+
 const FLIGHTS_BY_ID = {
   aa1245: {
     id: "aa1245",
@@ -19,7 +21,7 @@ const FLIGHTS_BY_ID = {
     terminal: "A12",
     stopsLabel: "Nonstop",
     priceUsd: 389,
-    dateLabel: "March 10, 2026",
+    dateLabel: "",
   },
   dl2890: {
     id: "dl2890",
@@ -33,7 +35,7 @@ const FLIGHTS_BY_ID = {
     terminal: "B4",
     stopsLabel: "Nonstop",
     priceUsd: 425,
-    dateLabel: "March 10, 2026",
+    dateLabel: "",
   },
   ua903: {
     id: "ua903",
@@ -47,16 +49,32 @@ const FLIGHTS_BY_ID = {
     terminal: "C17",
     stopsLabel: "1 stop",
     priceUsd: 349,
-    dateLabel: "March 10, 2026",
+    dateLabel: "",
   },
 } as const;
 
 type Props = NativeStackScreenProps<RebookStackParamList, "RebookConfirm">;
 
+function addDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function formatDateLabel(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export function RebookConfirmScreen({ navigation, route }: Props) {
   const flight =
     (FLIGHTS_BY_ID as any)[route.params.selectedFlightId] ??
     FLIGHTS_BY_ID.aa1245;
+  const dateLabel = React.useMemo(() => formatDateLabel(addDays(new Date(), 2)), []);
+  const fareDifferenceUsd = Math.max(0, (flight?.priceUsd ?? 0) - ORIGINAL_TICKET_USD);
 
   return (
     <View style={styles.safe}>
@@ -75,7 +93,7 @@ export function RebookConfirmScreen({ navigation, route }: Props) {
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>New Flight</Text>
-          <Text style={styles.cardSub}>{flight.dateLabel}</Text>
+          <Text style={styles.cardSub}>{dateLabel}</Text>
 
           <View style={styles.routeRow}>
             <View style={styles.routeBlock}>
@@ -105,13 +123,24 @@ export function RebookConfirmScreen({ navigation, route }: Props) {
             </Text>
           </View>
           <View style={styles.rowBetween}>
+            <Text style={styles.rowLabel}>Original fare</Text>
+            <Text style={styles.rowValue}>${ORIGINAL_TICKET_USD}</Text>
+          </View>
+          <View style={styles.rowBetween}>
+            <Text style={styles.rowLabel}>New fare</Text>
+            <Text style={styles.rowValue}>${flight.priceUsd}</Text>
+          </View>
+          <View style={styles.rowBetween}>
             <Text style={styles.rowLabel}>Payment</Text>
             <Text style={styles.rowValue}>VISA •••• 4242</Text>
           </View>
           <View style={styles.rowBetween}>
-            <Text style={styles.rowLabel}>Total</Text>
-            <Text style={styles.totalValue}>${flight.priceUsd}</Text>
+            <Text style={styles.rowLabel}>Fare difference</Text>
+            <Text style={styles.totalValue}>${fareDifferenceUsd}</Text>
           </View>
+          <Text style={styles.chargeNote}>
+            Your card will be charged the fare difference today.
+          </Text>
         </View>
 
         <Pressable
@@ -182,6 +211,7 @@ const styles = StyleSheet.create({
   rowLabel: { ...typography.caption, color: colors.subtext, fontWeight: "800" },
   rowValue: { ...typography.caption, color: colors.text, fontWeight: "800" },
   totalValue: { ...typography.h2, color: colors.orange, fontWeight: "900" },
+  chargeNote: { ...typography.caption, color: colors.subtext, marginTop: 10 },
   primaryButton: {
     marginTop: 14,
     height: 52,
@@ -203,4 +233,3 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: { ...typography.body, color: colors.subtext, fontWeight: "800" },
 });
-

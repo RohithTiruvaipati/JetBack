@@ -23,7 +23,7 @@ type AvailableFlight = {
 const CANCELLED_FLIGHT = {
   flightNumber: "AA 892",
   statusLabel: "CANCELLED",
-  dateLabel: "March 8, 2026",
+  dateLabel: "",
   departTime: "2:15 PM",
   arriveTime: "6:30 PM",
   duration: "4h 15m",
@@ -77,8 +77,25 @@ const ORIGINAL_TICKET_USD = 328;
 
 type Props = NativeStackScreenProps<RebookStackParamList, "RebookFlight">;
 
+function addDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function formatDateLabel(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export function RebookFlightScreen({ navigation }: Props) {
   const [selectedId, setSelectedId] = React.useState(AVAILABLE_FLIGHTS[0]?.id ?? "");
+  const today = React.useMemo(() => new Date(), []);
+  const cancelledDateLabel = React.useMemo(() => formatDateLabel(today), [today]);
+  const searchDateLabel = React.useMemo(() => formatDateLabel(addDays(today, 2)), [today]);
 
   const selected = React.useMemo(
     () => AVAILABLE_FLIGHTS.find((f) => f.id === selectedId) ?? AVAILABLE_FLIGHTS[0],
@@ -99,13 +116,13 @@ export function RebookFlightScreen({ navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <CancelledCard />
+        <CancelledCard dateLabel={cancelledDateLabel} />
 
         <View style={styles.searchCard}>
           <Text style={styles.sectionTitle}>Search New Flights</Text>
           <View style={styles.searchRow}>
             <View style={styles.searchPill}>
-              <Text style={styles.searchText}>March 10, 2026</Text>
+              <Text style={styles.searchText}>{searchDateLabel}</Text>
             </View>
             <View style={styles.searchPill}>
               <Text style={styles.searchText}>DFW → LAX</Text>
@@ -167,14 +184,14 @@ export function RebookFlightScreen({ navigation }: Props) {
   );
 }
 
-function CancelledCard() {
+function CancelledCard({ dateLabel }: { dateLabel: string }) {
   return (
     <View style={styles.cancelledCard}>
       <View style={styles.cancelledTop}>
         <Text style={styles.cancelledFlightNum}>{CANCELLED_FLIGHT.flightNumber}</Text>
         <Text style={styles.cancelledStatus}>{CANCELLED_FLIGHT.statusLabel}</Text>
       </View>
-      <Text style={styles.cancelledDate}>{CANCELLED_FLIGHT.dateLabel}</Text>
+      <Text style={styles.cancelledDate}>{dateLabel}</Text>
 
       <View style={styles.routeRow}>
         <View style={styles.routeBlock}>
@@ -385,4 +402,3 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: { ...typography.body, color: colors.subtext, fontWeight: "800" },
 });
-
