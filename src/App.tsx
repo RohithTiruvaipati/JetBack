@@ -1,15 +1,111 @@
 import React from "react";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar } from "expo-status-bar";
+import { Ionicons } from "@expo/vector-icons";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { colors } from "@/theme/colors";
-import type { RootStackParamList } from "@/types/navigation";
+
+import type {
+  RootTabParamList,
+  FlightsStackParamList,
+  MessagesStackParamList,
+  AuthStackParamList,
+  AppRootStackParamList,
+  RebookStackParamList,
+  VoucherStackParamList,
+  HotelStackParamList,
+} from "@/types/navigation";
+
 import { SavedFlightsScreen } from "@/screens/SavedFlightsScreen";
 import { FlightStatusScreen } from "@/screens/FlightStatusScreen";
 import { PassengerRightsScreen } from "@/screens/PassengerRightsScreen";
+import { ChatListScreen } from "@/screens/ChatListScreen";
+import { ChatConversationScreen } from "@/screens/ChatConversationScreen";
+import { AgentEscalationScreen } from "@/screens/AgentEscalationScreen";
+import { LoginScreen } from "@/screens/LoginScreen";
+import { CreateAccountScreen } from "@/screens/CreateAccountScreen";
+import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
+import { RebookFlightScreen } from "@/screens/RebookFlightScreen";
+import { RebookConfirmScreen } from "@/screens/RebookConfirmScreen";
+import { MealVoucherScreen } from "@/screens/MealVoucherScreen";
+import { HotelBookingScreen } from "@/screens/HotelBookingScreen";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+// ─── Nested stacks ──────────────────────────────────────────────────
+
+const FlightsStack = createNativeStackNavigator<FlightsStackParamList>();
+const MessagesStack = createNativeStackNavigator<MessagesStackParamList>();
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
+const RebookStack = createNativeStackNavigator<RebookStackParamList>();
+const VoucherStack = createNativeStackNavigator<VoucherStackParamList>();
+const HotelStack = createNativeStackNavigator<HotelStackParamList>();
+
+function FlightsNavigator() {
+  return (
+    <FlightsStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <FlightsStack.Screen name="SavedFlights" component={SavedFlightsScreen} />
+      <FlightsStack.Screen name="FlightStatus" component={FlightStatusScreen} />
+      <FlightsStack.Screen name="PassengerRights" component={PassengerRightsScreen} />
+    </FlightsStack.Navigator>
+  );
+}
+
+function MessagesNavigator() {
+  return (
+    <MessagesStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <MessagesStack.Screen name="ChatList" component={ChatListScreen} />
+      <MessagesStack.Screen name="ChatConversation" component={ChatConversationScreen} />
+      <MessagesStack.Screen name="AgentEscalation" component={AgentEscalationScreen} />
+    </MessagesStack.Navigator>
+  );
+}
+
+function RebookNavigator() {
+  return (
+    <RebookStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <RebookStack.Screen name="RebookFlight" component={RebookFlightScreen} />
+      <RebookStack.Screen name="RebookConfirm" component={RebookConfirmScreen} />
+    </RebookStack.Navigator>
+  );
+}
+
+function VoucherNavigator() {
+  return (
+    <VoucherStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <VoucherStack.Screen name="MealVoucher" component={MealVoucherScreen} />
+    </VoucherStack.Navigator>
+  );
+}
+
+function HotelNavigator() {
+  return (
+    <HotelStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <HotelStack.Screen name="HotelBooking" component={HotelBookingScreen} />
+    </HotelStack.Navigator>
+  );
+}
+
+function AuthNavigator({ onSignedIn }: { onSignedIn: () => void }) {
+  return (
+    <AuthStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <AuthStack.Screen name="Login">
+        {(props) => <LoginScreen {...props} onSignedIn={onSignedIn} />}
+      </AuthStack.Screen>
+      <AuthStack.Screen name="CreateAccount">
+        {(props) => <CreateAccountScreen {...props} onSignedIn={onSignedIn} />}
+      </AuthStack.Screen>
+      <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+    </AuthStack.Navigator>
+  );
+}
+
+// ─── Tab bar ────────────────────────────────────────────────────────
+
+const Tab = createBottomTabNavigator<RootTabParamList>();
+
 
 const navTheme = {
   ...DefaultTheme,
@@ -19,18 +115,113 @@ const navTheme = {
   }
 };
 
+function TabIcon({ icon, focused, color }: { icon: any; focused: boolean; color: string }) {
+  return (
+    <View
+      style={[
+        tabStyles.iconWrap,
+        focused && tabStyles.iconWrapActive,
+      ]}
+    >
+      <Ionicons name={icon} size={22} color={color} />
+    </View>
+  );
+}
 export default function App() {
+  const [signedIn, setSignedIn] = React.useState(false);
+
   return (
     <PhoneFrame>
       <NavigationContainer theme={navTheme}>
         <StatusBar style="dark" />
-        <Stack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
-          <Stack.Screen name="SavedFlights" component={SavedFlightsScreen} />
-          <Stack.Screen name="FlightStatus" component={FlightStatusScreen} />
-          <Stack.Screen name="PassengerRights" component={PassengerRightsScreen} />
-        </Stack.Navigator>
+        <AppRootStack.Navigator screenOptions={{ headerShown: false }}>
+          {!signedIn ? (
+            <AppRootStack.Screen name="Auth">
+              {() => <AuthNavigator onSignedIn={() => setSignedIn(true)} />}
+            </AppRootStack.Screen>
+          ) : (
+            <AppRootStack.Screen name="Main">
+              {() => (
+                <Tab.Navigator
+                  screenOptions={{
+                    headerShown: false,
+                    tabBarStyle: tabStyles.bar,
+                    tabBarShowLabel: false,
+                    tabBarActiveTintColor: colors.card,
+                    tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
+                  }}
+                >
+                  <Tab.Screen
+                    name="FlightsTab"
+                    component={FlightsNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="airplane" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="MessagesTab"
+                    component={MessagesNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="chatbubbles" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="RebookTab"
+                    component={RebookNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="swap-horizontal" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="VoucherTab"
+                    component={VoucherNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="fast-food" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="HotelTab"
+                    component={HotelNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="bed" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                </Tab.Navigator>
+              )}
+            </AppRootStack.Screen>
+          )}
+        </AppRootStack.Navigator>
       </NavigationContainer>
     </PhoneFrame>
   );
 }
 
+const tabStyles = StyleSheet.create({
+  bar: {
+    backgroundColor: colors.orange,
+    borderTopWidth: 0,
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: 60,
+  },
+  iconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconWrapActive: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+});
