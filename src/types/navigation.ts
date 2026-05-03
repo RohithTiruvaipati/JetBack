@@ -4,6 +4,13 @@ export type RootTabParamList = {
   MessagesTab: undefined;
 };
 
+// ─── Auth stack (shown before tabs) ─────────────────────────────────
+export type AuthStackParamList = {
+  Login: undefined;
+  CreateAccount: undefined;
+  ForgotPassword: undefined;
+};
+
 // ─── Flights stack (nested inside FlightsTab) ────────────────────────
 export type FlightsStackParamList = {
   SavedFlights: undefined;
@@ -20,3 +27,9 @@ export type MessagesStackParamList = {
 
 // ─── Legacy union kept for any cross-stack navigations ───────────────
 export type RootStackParamList = FlightsStackParamList & MessagesStackParamList;
+
+// ─── App root stack ────────────────────────────────────────────────
+export type AppRootStackParamList = {
+  Auth: undefined;
+  Main: undefined;
+};
