@@ -7,11 +7,8 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { colors } from "@/theme/colors";
-<<<<<<< HEAD
 import { FlightsProvider } from "@/state/FlightsStore";
-=======
 
->>>>>>> 4d6687e7415d013476ea7774fdd707b99f3ca0a8
 import type {
   RootTabParamList,
   FlightsStackParamList,
@@ -155,7 +152,6 @@ export default function App() {
                       tabBarActiveTintColor: colors.card,
                       tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
                     }}
-<<<<<<< HEAD
                   >
                     <Tab.Screen
                       name="FlightsTab"
@@ -184,6 +180,24 @@ export default function App() {
                         ),
                       }}
                     />
+                    <Tab.Screen
+                      name="VoucherTab"
+                      component={VoucherNavigator}
+                      options={{
+                        tabBarIcon: ({ focused, color }) => (
+                          <TabIcon icon="fast-food" focused={focused} color={color} />
+                        ),
+                      }}
+                    />
+                    <Tab.Screen
+                      name="HotelTab"
+                      component={HotelNavigator}
+                      options={{
+                        tabBarIcon: ({ focused, color }) => (
+                          <TabIcon icon="bed" focused={focused} color={color} />
+                        ),
+                      }}
+                    />
                   </Tab.Navigator>
                 )}
               </AppRootStack.Screen>
@@ -191,51 +205,6 @@ export default function App() {
           </AppRootStack.Navigator>
         </NavigationContainer>
       </FlightsProvider>
-=======
-                  />
-                  <Tab.Screen
-                    name="MessagesTab"
-                    component={MessagesNavigator}
-                    options={{
-                      tabBarIcon: ({ focused, color }) => (
-                        <TabIcon icon="chatbubbles" focused={focused} color={color} />
-                      ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="RebookTab"
-                    component={RebookNavigator}
-                    options={{
-                      tabBarIcon: ({ focused, color }) => (
-                        <TabIcon icon="swap-horizontal" focused={focused} color={color} />
-                      ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="VoucherTab"
-                    component={VoucherNavigator}
-                    options={{
-                      tabBarIcon: ({ focused, color }) => (
-                        <TabIcon icon="fast-food" focused={focused} color={color} />
-                      ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="HotelTab"
-                    component={HotelNavigator}
-                    options={{
-                      tabBarIcon: ({ focused, color }) => (
-                        <TabIcon icon="bed" focused={focused} color={color} />
-                      ),
-                    }}
-                  />
-                </Tab.Navigator>
-              )}
-            </AppRootStack.Screen>
-          )}
-        </AppRootStack.Navigator>
-      </NavigationContainer>
->>>>>>> 4d6687e7415d013476ea7774fdd707b99f3ca0a8
     </PhoneFrame>
   );
 }
