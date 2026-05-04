@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import { systemLog } from "@/data/chatData";
@@ -164,23 +165,14 @@ export function AgentEscalationScreen({ navigation, route }: Props) {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          style={styles.backBtn}
-        >
-          <Text style={styles.backChev}>‹</Text>
-        </Pressable>
-
         <View style={styles.headerCenter}>
           <View style={styles.headerAvatar}>
-            <Text style={styles.headerAvatarIcon}>✈</Text>
+            <Ionicons name="headset" size={18} color="#FFFFFF" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitle}>JetBack Support</Text>
             <Text style={styles.headerSubtitle}>
-              Connecting to a live agent
+              Connecting you to a live agent
             </Text>
           </View>
         </View>
@@ -229,20 +221,6 @@ export function AgentEscalationScreen({ navigation, route }: Props) {
             <Text style={styles.waitSub}>
               Please keep this chat open while we connect{"\n"}you.
             </Text>
-
-            {/* Agent preview */}
-            <View style={styles.agentPreview}>
-              <View style={styles.agentAvatarLarge}>
-                <Text style={styles.agentAvatarIcon}>👤</Text>
-              </View>
-              <View>
-                <Text style={styles.agentPreviewLabel}>Next Available Agent</Text>
-                <Text style={styles.agentPreviewName}>
-                  Agent Sarah{" "}
-                  <Text style={styles.agentPreviewStatus}>(Connecting...)</Text>
-                </Text>
-              </View>
-            </View>
           </Animated.View>
         ) : (
           <View style={styles.connectedCard}>
@@ -253,6 +231,20 @@ export function AgentEscalationScreen({ navigation, route }: Props) {
             <Text style={styles.connectedSub}>
               Agent Sarah is now assisting you.
             </Text>
+          </View>
+        )}
+
+        {state !== "connected" && (
+          <View style={styles.agentPreview}>
+            <View style={styles.agentAvatarLarge}>
+              <Ionicons name="person-outline" size={24} color="#FFFFFF" />
+            </View>
+            <View>
+              <Text style={styles.agentPreviewLabel}>Next Available Agent</Text>
+              <Text style={styles.agentPreviewName}>
+                Agent Sarah (Connecting...)
+              </Text>
+            </View>
           </View>
         )}
 
@@ -283,13 +275,12 @@ export function AgentEscalationScreen({ navigation, route }: Props) {
           <Pressable
             style={({ pressed }) => [
               styles.actionBtn,
-              styles.actionBtnCancel,
               pressed && styles.actionBtnPressed,
             ]}
             onPress={handleCancel}
             accessibilityRole="button"
           >
-            <Text style={[styles.actionBtnText, styles.actionBtnCancelText]}>
+            <Text style={styles.actionBtnText}>
               Cancel request
             </Text>
           </Pressable>
@@ -323,7 +314,7 @@ export function AgentEscalationScreen({ navigation, route }: Props) {
           accessibilityRole="button"
           accessibilityLabel="Send message"
         >
-          <Text style={styles.sendIcon}>➤</Text>
+          <Ionicons name="send" size={18} color="#FFFFFF" style={{ marginLeft: 2 }} />
         </Pressable>
       </View>
     </View>
@@ -337,122 +328,110 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingTop: 14,
-    paddingBottom: 12,
-    backgroundColor: colors.bg,
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 20,
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
     borderBottomColor: colors.divider,
   },
-  backBtn: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  backChev: { fontSize: 24, color: colors.subtext, fontWeight: "800" },
   headerCenter: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 16,
   },
   headerAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.orangeSoft,
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: colors.orange,
     alignItems: "center",
     justifyContent: "center",
   },
-  headerAvatarIcon: { fontSize: 16 },
-  headerTitle: { ...typography.h2, color: colors.text, fontWeight: "900" },
-  headerSubtitle: { ...typography.caption, color: colors.subtext, fontSize: 10 },
+  headerTitle: { ...typography.h2, color: "#4B5563", fontWeight: "700", fontSize: 20 },
+  headerSubtitle: { ...typography.caption, color: "#9CA3AF", fontSize: 12, marginTop: 2 },
   connectingBadge: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    backgroundColor: colors.greenSoft,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 999,
+    gap: 6,
   },
   connectingDotSmall: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.green,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FBBF24",
   },
-  connectingBadgeText: { ...typography.caption, color: colors.green, fontWeight: "700", fontSize: 10 },
+  connectingBadgeText: { ...typography.caption, color: "#9CA3AF", fontWeight: "500", fontSize: 12 },
 
   // Content
-  content: { flex: 1, paddingHorizontal: 16, paddingTop: 24 },
+  content: { flex: 1, paddingHorizontal: 24, paddingTop: 32 },
 
   connectingCard: {
     backgroundColor: colors.card,
-    borderRadius: 22,
-    padding: 24,
+    borderRadius: 20,
+    padding: 32,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: colors.divider,
-    shadowColor: colors.shadow,
+    borderColor: "#E5E7EB",
+    shadowColor: "rgba(0,0,0,0.05)",
     shadowOpacity: 1,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 4,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
-  dotsRow: { flexDirection: "row", gap: 8, marginBottom: 18 },
+  dotsRow: { flexDirection: "row", gap: 8, marginBottom: 24 },
   bigDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
     backgroundColor: colors.orange,
   },
   connectingTitle: {
-    ...typography.h2,
-    color: colors.text,
+    ...typography.body,
+    color: "#4B5563",
     textAlign: "center",
-    fontWeight: "800",
-    lineHeight: 22,
+    fontWeight: "500",
+    fontSize: 16,
+    lineHeight: 24,
   },
   waitRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 14,
+    marginTop: 20,
   },
-  waitLabel: { ...typography.body, color: colors.subtext },
-  waitValue: { ...typography.body, color: colors.text, fontWeight: "900" },
+  waitLabel: { ...typography.body, color: "#4B5563", fontWeight: "600", fontSize: 15 },
+  waitValue: { ...typography.body, color: "#4B5563", fontWeight: "600", fontSize: 15 },
   waitSub: {
     ...typography.caption,
-    color: colors.subtext,
+    color: "#9CA3AF",
     textAlign: "center",
-    marginTop: 8,
-    lineHeight: 16,
+    marginTop: 12,
+    lineHeight: 20,
+    fontSize: 13,
   },
 
   agentPreview: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    marginTop: 20,
-    backgroundColor: colors.grayPill,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 16,
+    gap: 16,
+    marginTop: 16,
+    backgroundColor: "#F3F4F6",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 20,
     width: "100%",
   },
   agentAvatarLarge: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: colors.divider,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "#312E81",
     alignItems: "center",
     justifyContent: "center",
   },
-  agentAvatarIcon: { fontSize: 20 },
-  agentPreviewLabel: { ...typography.caption, color: colors.subtext },
-  agentPreviewName: { ...typography.body, color: colors.text, fontWeight: "800", marginTop: 2 },
-  agentPreviewStatus: { color: colors.subtext, fontWeight: "500" },
+  agentPreviewLabel: { ...typography.caption, color: "#9CA3AF", fontSize: 13, fontWeight: "500" },
+  agentPreviewName: { ...typography.body, color: "#4B5563", fontWeight: "600", fontSize: 16, marginTop: 4 },
 
   // Connected state
   connectedCard: {
@@ -477,48 +456,46 @@ const styles = StyleSheet.create({
   connectedSub: { ...typography.body, color: colors.subtext, marginTop: 6 },
 
   // Action buttons
-  actionsWrap: { marginTop: 20, gap: 10 },
+  actionsWrap: { marginTop: 24, gap: 12 },
   actionBtn: {
     backgroundColor: colors.card,
     borderRadius: 16,
-    paddingVertical: 14,
+    paddingVertical: 16,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: colors.divider,
+    borderColor: "#E5E7EB",
   },
-  actionBtnPressed: { opacity: 0.8, backgroundColor: colors.grayPill },
-  actionBtnText: { ...typography.body, color: colors.text, fontWeight: "800" },
-  actionBtnCancel: { borderColor: colors.orange },
-  actionBtnCancelText: { color: colors.orange },
+  actionBtnPressed: { opacity: 0.8, backgroundColor: "#F9FAFB" },
+  actionBtnText: { ...typography.body, color: "#4B5563", fontWeight: "600", fontSize: 15 },
 
   // Input bar
   inputBar: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
     backgroundColor: colors.card,
     borderTopWidth: 1,
     borderTopColor: colors.divider,
-    gap: 8,
+    gap: 16,
   },
   input: {
     flex: 1,
-    backgroundColor: colors.grayPill,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
     ...typography.body,
     color: colors.text,
+    fontSize: 15,
   },
   sendBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: colors.orange,
     alignItems: "center",
     justifyContent: "center",
   },
   sendBtnDisabled: { opacity: 0.4 },
-  sendIcon: { color: "#FFFFFF", fontSize: 18, fontWeight: "900" },
 });
