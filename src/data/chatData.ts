@@ -210,7 +210,9 @@ export function shouldEscalate(userText: string): boolean {
     lower.includes("person") ||
     lower.includes("representative") ||
     lower.includes("speak to someone") ||
-    lower.includes("connect me")
+    lower.includes("connect me") ||
+    lower.includes("support") ||
+    lower.includes("help me")
   );
 }
 
