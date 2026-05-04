@@ -30,8 +30,8 @@ export function HotelBookingScreen({ navigation }: any) {
 
           <View style={styles.confirmCard}>
             <Row label="Hotel" value={hotel.name} />
-            <Row label="Check-in" value="Mar 6, 2026" />
-            <Row label="Check-out" value="Mar 7, 2026" />
+            <Row label="Check-in" value="May 4, 2026" />
+            <Row label="Check-out" value="May 6, 2026" />
             <Row label="Guests" value="2 Adults" />
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total Paid</Text>
@@ -82,7 +82,7 @@ export function HotelBookingScreen({ navigation }: any) {
             </View>
             <View style={styles.col}>
               <Text style={styles.label}>Check-in</Text>
-              <Text style={styles.value}>Mar 6, 2026</Text>
+              <Text style={styles.value}>May 4, 2026</Text>
             </View>
           </View>
         </View>
@@ -127,8 +127,8 @@ export function HotelBookingScreen({ navigation }: any) {
         <View style={[styles.card, { marginTop: 20 }]}>
           <Text style={styles.sectionTitle}>Booking Summary</Text>
           <Row label="Hotel" value={hotel.name} />
-          <Row label="Check-in" value="Mar 6, 2026" />
-          <Row label="Check-out" value="Mar 7, 2026" />
+          <Row label="Check-in" value="May 4, 2026" />
+          <Row label="Check-out" value="May 6, 2026" />
           <Row label="Guests" value="2 Adults" />
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total Cost</Text>
