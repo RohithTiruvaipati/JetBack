@@ -1,4 +1,3 @@
-
 // ─── Bottom tab navigator ────────────────────────────────────────────
 export type RootTabParamList = {
   FlightsTab: undefined;
@@ -17,12 +16,10 @@ export type AuthStackParamList = {
 
 // ─── Flights stack (nested inside FlightsTab) ────────────────────────
 export type FlightsStackParamList = {
-
   SavedFlights: undefined;
   FlightStatus: { flightId: string };
   PassengerRights: undefined;
 };
-
 
 // ─── Messages stack (nested inside MessagesTab) ──────────────────────
 export type MessagesStackParamList = {
@@ -37,18 +34,15 @@ export type RebookStackParamList = {
   RebookConfirm: { selectedFlightId: string };
 };
 
-// ─── Voucher stack (nested inside VoucherTab) ───────────────────────
+// ─── Voucher stack (nested inside VoucherTab) ────────────────────────
 export type VoucherStackParamList = {
   MealVoucher: undefined;
 };
 
-// ─── Hotel stack (nested inside HotelTab) ───────────────────────────
+// ─── Hotel stack (nested inside HotelTab) ────────────────────────────
 export type HotelStackParamList = {
   HotelBooking: undefined;
 };
-
-// ─── Legacy union kept for any cross-stack navigations ───────────────
-export type RootStackParamList = FlightsStackParamList & MessagesStackParamList;
 
 // ─── App root stack ────────────────────────────────────────────────
 export type AppRootStackParamList = {
@@ -56,3 +50,5 @@ export type AppRootStackParamList = {
   Main: undefined;
 };
 
+// ─── Legacy union kept for any cross-stack navigations ───────────────
+export type RootStackParamList = FlightsStackParamList & MessagesStackParamList;

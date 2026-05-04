@@ -106,13 +106,12 @@ function AuthNavigator({ onSignedIn }: { onSignedIn: () => void }) {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-
 const navTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: colors.bg
-  }
+    background: colors.bg,
+  },
 };
 
 function TabIcon({ icon, focused, color }: { icon: any; focused: boolean; color: string }) {
@@ -127,6 +126,7 @@ function TabIcon({ icon, focused, color }: { icon: any; focused: boolean; color:
     </View>
   );
 }
+
 export default function App() {
   const [signedIn, setSignedIn] = React.useState(false);
 
