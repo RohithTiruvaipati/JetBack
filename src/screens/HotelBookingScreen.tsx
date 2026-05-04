@@ -47,7 +47,7 @@ export function HotelBookingScreen({ navigation }: any) {
             A confirmation email has been sent to you. Check-in details will be available at the hotel front desk.
           </Text>
 
-          <Pressable style={styles.doneBtn} onPress={() => navigation.popToTop()}>
+          <Pressable style={styles.doneBtn} onPress={() => setConfirmed(false)}>
             <Text style={styles.doneBtnText}>Done</Text>
           </Pressable>
         </View>

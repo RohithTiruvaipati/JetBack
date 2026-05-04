@@ -68,7 +68,7 @@ export function MealVoucherScreen({ navigation }: any) {
             Present this code to the cashier. Any amount over $20.00 will be charged to your card on file.
           </Text>
 
-          <Pressable style={styles.doneBtn} onPress={() => navigation.popToTop()}>
+          <Pressable style={styles.doneBtn} onPress={() => setRedeemed(false)}>
             <Text style={styles.doneBtnText}>Done</Text>
           </Pressable>
         </View>
