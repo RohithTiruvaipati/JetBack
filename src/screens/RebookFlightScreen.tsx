@@ -5,6 +5,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import type { RebookStackParamList } from "@/types/navigation";
+import { useFlights } from "@/state/FlightsStore";
 
 type AvailableFlight = {
   id: string;
@@ -20,15 +21,15 @@ type AvailableFlight = {
   priceUsd: number;
 };
 
-const CANCELLED_FLIGHT = {
+const DEFAULT_CANCELLED = {
   flightNumber: "AA 892",
   statusLabel: "CANCELLED",
-  dateLabel: "",
   departTime: "2:15 PM",
   arriveTime: "6:30 PM",
   duration: "4h 15m",
   fromCode: "DFW",
   toCode: "LAX",
+  originalFareUsd: 328,
 };
 
 const AVAILABLE_FLIGHTS: AvailableFlight[] = [
@@ -73,8 +74,6 @@ const AVAILABLE_FLIGHTS: AvailableFlight[] = [
   },
 ];
 
-const ORIGINAL_TICKET_USD = 328;
-
 type Props = NativeStackScreenProps<RebookStackParamList, "RebookFlight">;
 
 function addDays(date: Date, days: number) {
@@ -91,18 +90,38 @@ function formatDateLabel(date: Date) {
   });
 }
 
-export function RebookFlightScreen({ navigation }: Props) {
+export function RebookFlightScreen({ navigation, route }: Props) {
+  const { flights, getFlight } = useFlights();
   const [selectedId, setSelectedId] = React.useState(AVAILABLE_FLIGHTS[0]?.id ?? "");
   const today = React.useMemo(() => new Date(), []);
   const cancelledDateLabel = React.useMemo(() => formatDateLabel(today), [today]);
   const searchDateLabel = React.useMemo(() => formatDateLabel(addDays(today, 2)), [today]);
+
+  const originalFlightId = route.params?.originalFlightId ?? flights[0]?.id;
+  const original = originalFlightId ? getFlight(originalFlightId) : undefined;
+  const cancelled = React.useMemo(() => {
+    if (!original) return DEFAULT_CANCELLED;
+    return {
+      flightNumber: original.flightNumber,
+      statusLabel: original.status === "ON_TIME" ? "CHANGE" : original.status,
+      departTime: original.departTime,
+      arriveTime: original.arriveTime,
+      duration: DEFAULT_CANCELLED.duration,
+      fromCode: original.fromCode,
+      toCode: original.toCode,
+      originalFareUsd: original.priceUsd,
+    };
+  }, [original]);
 
   const selected = React.useMemo(
     () => AVAILABLE_FLIGHTS.find((f) => f.id === selectedId) ?? AVAILABLE_FLIGHTS[0],
     [selectedId]
   );
 
-  const fareDifferenceUsd = Math.max(0, (selected?.priceUsd ?? 0) - ORIGINAL_TICKET_USD);
+  const fareDifferenceUsd = Math.max(
+    0,
+    (selected?.priceUsd ?? 0) - (cancelled.originalFareUsd ?? 0)
+  );
 
   return (
     <View style={styles.safe}>
@@ -116,7 +135,7 @@ export function RebookFlightScreen({ navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <CancelledCard dateLabel={cancelledDateLabel} />
+        <CancelledCard dateLabel={cancelledDateLabel} cancelled={cancelled} />
 
         <View style={styles.searchCard}>
           <Text style={styles.sectionTitle}>Search New Flights</Text>
@@ -157,7 +176,10 @@ export function RebookFlightScreen({ navigation }: Props) {
           accessibilityRole="button"
           style={styles.primaryButton}
           onPress={() =>
-            navigation.navigate("RebookConfirm", { selectedFlightId: selected?.id ?? "" })
+            navigation.navigate("RebookConfirm", {
+              originalFlightId: originalFlightId ?? "",
+              selectedFlightId: selected?.id ?? "",
+            })
           }
         >
           <Text style={styles.primaryButtonText}>Confirm Rebooking</Text>
@@ -184,31 +206,37 @@ export function RebookFlightScreen({ navigation }: Props) {
   );
 }
 
-function CancelledCard({ dateLabel }: { dateLabel: string }) {
+function CancelledCard({
+  dateLabel,
+  cancelled,
+}: {
+  dateLabel: string;
+  cancelled: typeof DEFAULT_CANCELLED;
+}) {
   return (
     <View style={styles.cancelledCard}>
       <View style={styles.cancelledTop}>
-        <Text style={styles.cancelledFlightNum}>{CANCELLED_FLIGHT.flightNumber}</Text>
-        <Text style={styles.cancelledStatus}>{CANCELLED_FLIGHT.statusLabel}</Text>
+        <Text style={styles.cancelledFlightNum}>{cancelled.flightNumber}</Text>
+        <Text style={styles.cancelledStatus}>{cancelled.statusLabel}</Text>
       </View>
       <Text style={styles.cancelledDate}>{dateLabel}</Text>
 
       <View style={styles.routeRow}>
         <View style={styles.routeBlock}>
-          <Text style={styles.routeTime}>{CANCELLED_FLIGHT.departTime}</Text>
-          <Text style={styles.routeCode}>{CANCELLED_FLIGHT.fromCode}</Text>
+          <Text style={styles.routeTime}>{cancelled.departTime}</Text>
+          <Text style={styles.routeCode}>{cancelled.fromCode}</Text>
         </View>
 
         <View style={styles.routeMid}>
           <View style={styles.routeLine} />
           <Ionicons name="airplane" size={14} color={colors.orange} />
           <View style={styles.routeLine} />
-          <Text style={styles.routeDuration}>{CANCELLED_FLIGHT.duration}</Text>
+          <Text style={styles.routeDuration}>{cancelled.duration}</Text>
         </View>
 
         <View style={[styles.routeBlock, { alignItems: "flex-end" }]}>
-          <Text style={styles.routeTime}>{CANCELLED_FLIGHT.arriveTime}</Text>
-          <Text style={styles.routeCode}>{CANCELLED_FLIGHT.toCode}</Text>
+          <Text style={styles.routeTime}>{cancelled.arriveTime}</Text>
+          <Text style={styles.routeCode}>{cancelled.toCode}</Text>
         </View>
       </View>
     </View>

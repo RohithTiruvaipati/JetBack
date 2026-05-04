@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { authStyles } from "@/components/auth/AuthStyles";
+import { isValidEmail } from "@/components/auth/authValidation";
 import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import type { AuthStackParamList } from "@/types/navigation";
@@ -17,8 +18,8 @@ export function ForgotPasswordScreen({ navigation }: Props) {
 
   function submit() {
     setError(null);
-    if (!email.trim() || !email.includes("@")) {
-      setError("Please enter a valid email address.");
+    if (!isValidEmail(email)) {
+      setError("Email must be 4–20 characters and include both @ and .");
       return;
     }
     setSent(true);
@@ -44,13 +45,14 @@ export function ForgotPasswordScreen({ navigation }: Props) {
               <Ionicons name="mail-outline" size={18} color={colors.subtext} />
               <TextInput
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(v) => setEmail(v.slice(0, 20))}
                 placeholder="Email address"
                 placeholderTextColor={colors.subtext}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
                 style={styles.inputInner}
+                maxLength={20}
               />
             </View>
           </View>

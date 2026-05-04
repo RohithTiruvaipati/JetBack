@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { colors } from "@/theme/colors";
+import { FlightsProvider } from "@/state/FlightsStore";
 import type {
   RootTabParamList,
   FlightsStackParamList,
@@ -109,58 +110,60 @@ export default function App() {
 
   return (
     <PhoneFrame>
-      <NavigationContainer theme={navTheme}>
-        <StatusBar style="dark" />
-        <AppRootStack.Navigator screenOptions={{ headerShown: false }}>
-          {!signedIn ? (
-            <AppRootStack.Screen name="Auth">
-              {() => <AuthNavigator onSignedIn={() => setSignedIn(true)} />}
-            </AppRootStack.Screen>
-          ) : (
-            <AppRootStack.Screen name="Main">
-              {() => (
-                <Tab.Navigator
-                  screenOptions={{
-                    headerShown: false,
-                    tabBarStyle: tabStyles.bar,
-                    tabBarShowLabel: false,
-                    tabBarActiveTintColor: colors.card,
-                    tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
-                  }}
-                >
-                  <Tab.Screen
-                    name="FlightsTab"
-                    component={FlightsNavigator}
-                    options={{
-                      tabBarIcon: ({ focused, color }) => (
-                        <TabIcon icon="airplane" focused={focused} color={color} />
-                      ),
+      <FlightsProvider>
+        <NavigationContainer theme={navTheme}>
+          <StatusBar style="dark" />
+          <AppRootStack.Navigator screenOptions={{ headerShown: false }}>
+            {!signedIn ? (
+              <AppRootStack.Screen name="Auth">
+                {() => <AuthNavigator onSignedIn={() => setSignedIn(true)} />}
+              </AppRootStack.Screen>
+            ) : (
+              <AppRootStack.Screen name="Main">
+                {() => (
+                  <Tab.Navigator
+                    screenOptions={{
+                      headerShown: false,
+                      tabBarStyle: tabStyles.bar,
+                      tabBarShowLabel: false,
+                      tabBarActiveTintColor: colors.card,
+                      tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
                     }}
-                  />
-                  <Tab.Screen
-                    name="MessagesTab"
-                    component={MessagesNavigator}
-                    options={{
-                      tabBarIcon: ({ focused, color }) => (
-                        <TabIcon icon="chatbubbles" focused={focused} color={color} />
-                      ),
-                    }}
-                  />
-                  <Tab.Screen
-                    name="RebookTab"
-                    component={RebookNavigator}
-                    options={{
-                      tabBarIcon: ({ focused, color }) => (
-                        <TabIcon icon="swap-horizontal" focused={focused} color={color} />
-                      ),
-                    }}
-                  />
-                </Tab.Navigator>
-              )}
-            </AppRootStack.Screen>
-          )}
-        </AppRootStack.Navigator>
-      </NavigationContainer>
+                  >
+                    <Tab.Screen
+                      name="FlightsTab"
+                      component={FlightsNavigator}
+                      options={{
+                        tabBarIcon: ({ focused, color }) => (
+                          <TabIcon icon="airplane" focused={focused} color={color} />
+                        ),
+                      }}
+                    />
+                    <Tab.Screen
+                      name="MessagesTab"
+                      component={MessagesNavigator}
+                      options={{
+                        tabBarIcon: ({ focused, color }) => (
+                          <TabIcon icon="chatbubbles" focused={focused} color={color} />
+                        ),
+                      }}
+                    />
+                    <Tab.Screen
+                      name="RebookTab"
+                      component={RebookNavigator}
+                      options={{
+                        tabBarIcon: ({ focused, color }) => (
+                          <TabIcon icon="swap-horizontal" focused={focused} color={color} />
+                        ),
+                      }}
+                    />
+                  </Tab.Navigator>
+                )}
+              </AppRootStack.Screen>
+            )}
+          </AppRootStack.Navigator>
+        </NavigationContainer>
+      </FlightsProvider>
     </PhoneFrame>
   );
 }

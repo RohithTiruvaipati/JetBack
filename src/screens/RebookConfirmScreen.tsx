@@ -5,8 +5,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import type { RebookStackParamList } from "@/types/navigation";
-
-const ORIGINAL_TICKET_USD = 328;
+import { useFlights } from "@/state/FlightsStore";
 
 const FLIGHTS_BY_ID = {
   aa1245: {
@@ -70,11 +69,15 @@ function formatDateLabel(date: Date) {
 }
 
 export function RebookConfirmScreen({ navigation, route }: Props) {
+  const { getFlight, rebookFlight } = useFlights();
+
   const flight =
     (FLIGHTS_BY_ID as any)[route.params.selectedFlightId] ??
     FLIGHTS_BY_ID.aa1245;
   const dateLabel = React.useMemo(() => formatDateLabel(addDays(new Date(), 2)), []);
-  const fareDifferenceUsd = Math.max(0, (flight?.priceUsd ?? 0) - ORIGINAL_TICKET_USD);
+  const original = getFlight(route.params.originalFlightId);
+  const originalFareUsd = original?.priceUsd ?? 0;
+  const fareDifferenceUsd = Math.max(0, (flight?.priceUsd ?? 0) - originalFareUsd);
 
   return (
     <View style={styles.safe}>
@@ -124,7 +127,7 @@ export function RebookConfirmScreen({ navigation, route }: Props) {
           </View>
           <View style={styles.rowBetween}>
             <Text style={styles.rowLabel}>Original fare</Text>
-            <Text style={styles.rowValue}>${ORIGINAL_TICKET_USD}</Text>
+            <Text style={styles.rowValue}>${originalFareUsd}</Text>
           </View>
           <View style={styles.rowBetween}>
             <Text style={styles.rowLabel}>New fare</Text>
@@ -146,7 +149,19 @@ export function RebookConfirmScreen({ navigation, route }: Props) {
         <Pressable
           style={styles.primaryButton}
           accessibilityRole="button"
-          onPress={() => navigation.popToTop()}
+          onPress={() => {
+            rebookFlight(route.params.originalFlightId, {
+              airline: flight.airline,
+              flightNumber: flight.flightNumber,
+              departTime: flight.departTime,
+              arriveTime: flight.arriveTime,
+              terminal: flight.terminal,
+              status: "ON_TIME",
+              statusLabel: "Rebooked",
+              priceUsd: flight.priceUsd,
+            });
+            (navigation as any).navigate("FlightsTab", { screen: "SavedFlights" });
+          }}
         >
           <Text style={styles.primaryButtonText}>Complete Rebooking</Text>
         </Pressable>

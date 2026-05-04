@@ -10,6 +10,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { authStyles } from "@/components/auth/AuthStyles";
+import { isValidEmail, isValidPassword } from "@/components/auth/authValidation";
 import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import type { AuthStackParamList } from "@/types/navigation";
@@ -33,12 +34,12 @@ export function CreateAccountScreen({ navigation, onSignedIn }: Props) {
       setError("Please enter your name.");
       return;
     }
-    if (!email.includes("@")) {
-      setError("Please enter a valid email address.");
+    if (!isValidEmail(email)) {
+      setError("Email must be 4–20 characters and include both @ and .");
       return;
     }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (!isValidPassword(password)) {
+      setError("Password must be at least 8 characters and include 1 special character.");
       return;
     }
     if (password !== confirmPassword) {
@@ -83,13 +84,14 @@ export function CreateAccountScreen({ navigation, onSignedIn }: Props) {
         <Text style={authStyles.label}>Email Address</Text>
         <TextInput
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(v) => setEmail(v.slice(0, 20))}
           placeholder="Email address"
           placeholderTextColor={colors.subtext}
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
           style={authStyles.input}
+          maxLength={20}
         />
       </View>
 

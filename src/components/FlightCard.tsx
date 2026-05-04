@@ -7,22 +7,46 @@ import type { SavedFlight } from "@/data/dummy";
 
 function toneForStatus(status: SavedFlight["status"]): "danger" | "neutral" | "success" {
   if (status === "DELAYED") return "danger";
+  if (status === "CANCELLED") return "danger";
   if (status === "ON_TIME") return "success";
   return "neutral";
 }
 
 export function FlightCard({
   flight,
-  onPress
+  onPress,
+  onLongPress,
+  onRebookPress,
 }: {
   flight: SavedFlight;
   onPress?: () => void;
+  onLongPress?: () => void;
+  onRebookPress?: () => void;
 }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" style={styles.card}>
+    <Pressable
+      onPress={onPress}
+      onLongPress={onLongPress}
+      accessibilityRole="button"
+      style={styles.card}
+    >
       <View style={styles.topRow}>
         <Text style={styles.flightNum}>{flight.flightNumber}</Text>
-        <Pill text={flight.statusLabel} tone={toneForStatus(flight.status)} />
+        <View style={styles.topRight}>
+          {flight.status !== "ON_TIME" && !!onRebookPress && (
+            <Pressable
+              onPress={(e) => {
+                (e as any)?.stopPropagation?.();
+                onRebookPress();
+              }}
+              accessibilityRole="button"
+              style={styles.rebookChip}
+            >
+              <Text style={styles.rebookChipText}>Rebook</Text>
+            </Pressable>
+          )}
+          <Pill text={flight.statusLabel} tone={toneForStatus(flight.status)} />
+        </View>
       </View>
 
       <View style={styles.codesRow}>
@@ -64,7 +88,15 @@ const styles = StyleSheet.create({
     elevation: 2
   },
   topRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  topRight: { flexDirection: "row", alignItems: "center", gap: 8 },
   flightNum: { ...typography.caption, color: colors.subtext, fontWeight: "700" },
+  rebookChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: colors.orangeSoft,
+  },
+  rebookChipText: { ...typography.caption, color: colors.orange, fontWeight: "900" },
   codesRow: { marginTop: 10, flexDirection: "row", alignItems: "center" },
   codeBlock: { flex: 1 },
   code: { fontSize: 28, fontWeight: "900", color: colors.text, letterSpacing: 0.5 },
@@ -76,4 +108,3 @@ const styles = StyleSheet.create({
   meta: { ...typography.caption, color: colors.subtext, fontWeight: "600" },
   dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: colors.divider, marginHorizontal: 8 }
 });
-

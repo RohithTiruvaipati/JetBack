@@ -5,7 +5,8 @@ import { typography } from "@/theme/typography";
 import { TopBar } from "@/components/TopBar";
 import { SegmentedTabs } from "@/components/SegmentedTabs";
 import { Timeline } from "@/components/Timeline";
-import { flightTimelineAA2047, savedFlights } from "@/data/dummy";
+import { flightTimelineAA2047 } from "@/data/dummy";
+import { useFlights } from "@/state/FlightsStore";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { FlightsStackParamList } from "@/types/navigation";
 
@@ -13,9 +14,10 @@ type Props = NativeStackScreenProps<FlightsStackParamList, "FlightStatus">;
 
 export function FlightStatusScreen({ navigation, route }: Props) {
   const [tab, setTab] = useState<"left" | "right">("left");
+  const { flights } = useFlights();
   const flight = useMemo(
-    () => savedFlights.find((f) => f.id === route.params.flightId) ?? savedFlights[0],
-    [route.params.flightId]
+    () => flights.find((f) => f.id === route.params.flightId) ?? flights[0],
+    [route.params.flightId, flights]
   );
 
   const showRebook = flight.status !== "ON_TIME";
@@ -95,7 +97,12 @@ export function FlightStatusScreen({ navigation, route }: Props) {
                 <Pressable
                   style={styles.rebookBtn}
                   accessibilityRole="button"
-                  onPress={() => {}}
+                  onPress={() => {
+                    (navigation as any).navigate("RebookTab", {
+                      screen: "RebookFlight",
+                      params: { originalFlightId: flight.id },
+                    });
+                  }}
                 >
                   <Text style={styles.rebookText}>Rebook flight</Text>
                 </Pressable>
@@ -260,4 +267,3 @@ const styles = StyleSheet.create({
   supportSub: { ...typography.caption, color: colors.subtext, marginTop: 6 },
   supportLink: { ...typography.caption, color: colors.orange, fontWeight: "800", marginTop: 10 }
 });
-

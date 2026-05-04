@@ -10,6 +10,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { authStyles } from "@/components/auth/AuthStyles";
+import { isValidEmail, isValidPassword } from "@/components/auth/authValidation";
 import { colors } from "@/theme/colors";
 import { typography } from "@/theme/typography";
 import type { AuthStackParamList } from "@/types/navigation";
@@ -27,8 +28,12 @@ export function LoginScreen({ navigation, onSignedIn }: Props) {
   function signIn() {
     setError(null);
     const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail || !normalizedEmail.includes("@") || password.length < 1) {
-      setError("Please enter your email and password.");
+    if (!isValidEmail(normalizedEmail)) {
+      setError("Email must be 4–20 characters and include both @ and .");
+      return;
+    }
+    if (!isValidPassword(password)) {
+      setError("Password must be at least 8 characters and include 1 special character.");
       return;
     }
     onSignedIn();
@@ -40,13 +45,14 @@ export function LoginScreen({ navigation, onSignedIn }: Props) {
         <Text style={authStyles.label}>Email Address</Text>
         <TextInput
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(v) => setEmail(v.slice(0, 20))}
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
           style={authStyles.input}
           returnKeyType="next"
           onSubmitEditing={() => passwordRef.current?.focus()}
+          maxLength={20}
         />
       </View>
 

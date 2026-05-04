@@ -28,8 +28,8 @@ export type MessagesStackParamList = {
 
 // ─── Rebook stack (nested inside RebookTab) ─────────────────────────
 export type RebookStackParamList = {
-  RebookFlight: undefined;
-  RebookConfirm: { selectedFlightId: string };
+  RebookFlight: { originalFlightId?: string } | undefined;
+  RebookConfirm: { originalFlightId: string; selectedFlightId: string };
 };
 
 // ─── Legacy union kept for any cross-stack navigations ───────────────

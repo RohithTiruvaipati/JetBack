@@ -1,8 +1,8 @@
-export type FlightStatus = "DELAYED" | "ON_TIME" | "BOARDING";
+export type FlightStatus = "DELAYED" | "ON_TIME" | "BOARDING" | "CANCELLED";
 
 export type SavedFlight = {
   id: string;
-  airline: "American" | "United" | "Southwest";
+  airline: "American" | "United" | "Southwest" | "Delta";
   flightNumber: string;
   fromCode: "DFW";
   fromCity: string;
@@ -13,6 +13,7 @@ export type SavedFlight = {
   terminal: string;
   gate: string;
   aircraft: string;
+  priceUsd: number;
   status: FlightStatus;
   statusLabel: string;
 };
@@ -31,6 +32,7 @@ export const savedFlights: SavedFlight[] = [
     terminal: "D",
     gate: "D18",
     aircraft: "Boeing 737",
+    priceUsd: 328,
     status: "DELAYED",
     statusLabel: "Delayed +2h 30m"
   },
@@ -47,6 +49,7 @@ export const savedFlights: SavedFlight[] = [
     terminal: "E",
     gate: "E22",
     aircraft: "Airbus A320",
+    priceUsd: 298,
     status: "ON_TIME",
     statusLabel: "On Time"
   },
@@ -63,6 +66,7 @@ export const savedFlights: SavedFlight[] = [
     terminal: "C",
     gate: "C9",
     aircraft: "Boeing 737 MAX",
+    priceUsd: 214,
     status: "BOARDING",
     statusLabel: "Boarding"
   }
@@ -96,4 +100,3 @@ export const passengerRights: PassengerRightItem[] = [
   { id: "delay", title: "Flight Delay Compensation", subtitle: "Carrier-Caused Delays" },
   { id: "baggage", title: "Baggage Rights", subtitle: "Lost, Delayed & Damaged Bags" }
 ];
-
