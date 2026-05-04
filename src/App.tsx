@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -7,7 +7,11 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { colors } from "@/theme/colors";
+<<<<<<< HEAD
 import { FlightsProvider } from "@/state/FlightsStore";
+=======
+
+>>>>>>> 4d6687e7415d013476ea7774fdd707b99f3ca0a8
 import type {
   RootTabParamList,
   FlightsStackParamList,
@@ -15,6 +19,8 @@ import type {
   AuthStackParamList,
   AppRootStackParamList,
   RebookStackParamList,
+  VoucherStackParamList,
+  HotelStackParamList,
 } from "@/types/navigation";
 
 import { SavedFlightsScreen } from "@/screens/SavedFlightsScreen";
@@ -28,6 +34,8 @@ import { CreateAccountScreen } from "@/screens/CreateAccountScreen";
 import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
 import { RebookFlightScreen } from "@/screens/RebookFlightScreen";
 import { RebookConfirmScreen } from "@/screens/RebookConfirmScreen";
+import { MealVoucherScreen } from "@/screens/MealVoucherScreen";
+import { HotelBookingScreen } from "@/screens/HotelBookingScreen";
 
 // ─── Nested stacks ──────────────────────────────────────────────────
 
@@ -36,6 +44,8 @@ const MessagesStack = createNativeStackNavigator<MessagesStackParamList>();
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
 const RebookStack = createNativeStackNavigator<RebookStackParamList>();
+const VoucherStack = createNativeStackNavigator<VoucherStackParamList>();
+const HotelStack = createNativeStackNavigator<HotelStackParamList>();
 
 function FlightsNavigator() {
   return (
@@ -63,6 +73,22 @@ function RebookNavigator() {
       <RebookStack.Screen name="RebookFlight" component={RebookFlightScreen} />
       <RebookStack.Screen name="RebookConfirm" component={RebookConfirmScreen} />
     </RebookStack.Navigator>
+  );
+}
+
+function VoucherNavigator() {
+  return (
+    <VoucherStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <VoucherStack.Screen name="MealVoucher" component={MealVoucherScreen} />
+    </VoucherStack.Navigator>
+  );
+}
+
+function HotelNavigator() {
+  return (
+    <HotelStack.Navigator screenOptions={{ headerShown: false, animation: "fade" }}>
+      <HotelStack.Screen name="HotelBooking" component={HotelBookingScreen} />
+    </HotelStack.Navigator>
   );
 }
 
@@ -129,6 +155,7 @@ export default function App() {
                       tabBarActiveTintColor: colors.card,
                       tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
                     }}
+<<<<<<< HEAD
                   >
                     <Tab.Screen
                       name="FlightsTab"
@@ -164,6 +191,51 @@ export default function App() {
           </AppRootStack.Navigator>
         </NavigationContainer>
       </FlightsProvider>
+=======
+                  />
+                  <Tab.Screen
+                    name="MessagesTab"
+                    component={MessagesNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="chatbubbles" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="RebookTab"
+                    component={RebookNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="swap-horizontal" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="VoucherTab"
+                    component={VoucherNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="fast-food" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                  <Tab.Screen
+                    name="HotelTab"
+                    component={HotelNavigator}
+                    options={{
+                      tabBarIcon: ({ focused, color }) => (
+                        <TabIcon icon="bed" focused={focused} color={color} />
+                      ),
+                    }}
+                  />
+                </Tab.Navigator>
+              )}
+            </AppRootStack.Screen>
+          )}
+        </AppRootStack.Navigator>
+      </NavigationContainer>
+>>>>>>> 4d6687e7415d013476ea7774fdd707b99f3ca0a8
     </PhoneFrame>
   );
 }

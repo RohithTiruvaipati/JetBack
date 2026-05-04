@@ -3,6 +3,8 @@ export type RootTabParamList = {
   FlightsTab: undefined;
   MessagesTab: undefined;
   RebookTab: undefined;
+  VoucherTab: undefined;
+  HotelTab: undefined;
 };
 
 // ─── Auth stack (shown before tabs) ─────────────────────────────────
@@ -32,11 +34,21 @@ export type RebookStackParamList = {
   RebookConfirm: { originalFlightId: string; selectedFlightId: string };
 };
 
-// ─── Legacy union kept for any cross-stack navigations ───────────────
-export type RootStackParamList = FlightsStackParamList & MessagesStackParamList;
+// ─── Voucher stack (nested inside VoucherTab) ────────────────────────
+export type VoucherStackParamList = {
+  MealVoucher: undefined;
+};
+
+// ─── Hotel stack (nested inside HotelTab) ────────────────────────────
+export type HotelStackParamList = {
+  HotelBooking: undefined;
+};
 
 // ─── App root stack ────────────────────────────────────────────────
 export type AppRootStackParamList = {
   Auth: undefined;
   Main: undefined;
 };
+
+// ─── Legacy union kept for any cross-stack navigations ───────────────
+export type RootStackParamList = FlightsStackParamList & MessagesStackParamList;
