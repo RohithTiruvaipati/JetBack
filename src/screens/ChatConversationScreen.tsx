@@ -17,6 +17,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { MessagesStackParamList } from "@/types/navigation";
 import {
   botConversationMessages,
+  conversations,
   generateBotReply,
   shouldEscalate,
   quickActions,
@@ -133,9 +134,26 @@ function ConfirmationBanner({ text, visible }: { text: string; visible: boolean 
 
 // ─── Main conversation screen ────────────────────────────────────────
 export function ChatConversationScreen({ navigation, route }: Props) {
-  const [messages, setMessages] = useState<Message[]>([
-    ...botConversationMessages,
-  ]);
+  const conversationId = route.params.conversationId;
+  const conversation = conversations.find((c) => c.id === conversationId);
+  const isBot = conversation?.avatarType === "bot";
+
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (isBot) return [...botConversationMessages];
+    if (conversation) {
+      return [
+        {
+          id: `m-${conversation.id}`,
+          conversationId: conversation.id,
+          sender: "agent",
+          text: conversation.lastMessage.replace("…", "..."),
+          timestamp: conversation.lastTimestamp,
+        },
+      ];
+    }
+    return [];
+  });
+
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [confirmation, setConfirmation] = useState("");
@@ -199,8 +217,8 @@ export function ChatConversationScreen({ navigation, route }: Props) {
     setInput("");
     scrollToBottom();
 
-    // Check if we should escalate to human agent
-    if (shouldEscalate(text)) {
+    // Check if we should escalate to human agent (only if talking to bot)
+    if (isBot && shouldEscalate(text)) {
       setIsTyping(true);
       setTimeout(() => {
         const botReply = generateBotReply(text);
@@ -224,11 +242,25 @@ export function ChatConversationScreen({ navigation, route }: Props) {
     const responseDelay = Math.random() * 800 + 400; // 400-1200ms, well under 150ms UI requirement
 
     setTimeout(() => {
-      const botReply = generateBotReply(text);
+      let replyText = "";
+      if (isBot) {
+        replyText = generateBotReply(text).text;
+      } else {
+        replyText = "Thanks for your message. I'm currently looking into this and will get back to you shortly.";
+      }
+
+      const botReply: Message = {
+        id: `reply-${Date.now()}`,
+        conversationId: route.params.conversationId,
+        sender: isBot ? "bot" : "agent",
+        text: replyText,
+        timestamp: Date.now(),
+      };
+
       setMessages((prev) => [...prev, botReply]);
       setIsTyping(false);
       scrollToBottom();
-      systemLog("info", "bot_reply_sent", botReply.text.substring(0, 60), route.params.conversationId);
+      systemLog("info", "reply_sent", replyText.substring(0, 60), route.params.conversationId);
 
       // Show confirmation for actionable requests
       if (
@@ -269,14 +301,18 @@ export function ChatConversationScreen({ navigation, route }: Props) {
 
         <View style={styles.headerCenter}>
           <View style={styles.headerAvatar}>
-            <Text style={styles.headerAvatarIcon}>✈</Text>
+            <Text style={styles.headerAvatarIcon}>
+              {isBot ? "✈" : "👤"}
+            </Text>
           </View>
           <View>
-            <Text style={styles.headerTitle}>jetBack Assistant</Text>
+            <Text style={styles.headerTitle}>{conversation?.title || "Chat"}</Text>
             <View style={styles.headerStatusRow}>
-              <View style={styles.onlineDot} />
+              {conversation?.status === "active" && <View style={styles.onlineDot} />}
               <Text style={styles.headerStatus}>
-                Online • Typically replies instantly
+                {conversation?.status === "active"
+                  ? "Online • Typically replies instantly"
+                  : "Offline • Conversation resolved"}
               </Text>
             </View>
           </View>
@@ -316,11 +352,13 @@ export function ChatConversationScreen({ navigation, route }: Props) {
               msg.sender === "user" ? styles.msgRowUser : styles.msgRowBot,
             ]}
           >
-            {msg.sender === "bot" && (
+            {msg.sender === "bot" || msg.sender === "agent" ? (
               <View style={styles.msgAvatar}>
-                <Text style={styles.msgAvatarIcon}>✈</Text>
+                <Text style={styles.msgAvatarIcon}>
+                  {msg.sender === "bot" ? "✈" : "👤"}
+                </Text>
               </View>
-            )}
+            ) : null}
             <View
               style={[
                 styles.bubble,
